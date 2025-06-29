@@ -39,16 +39,17 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
     }, [onCodeChange, roomId, socketRef]);
 
     useEffect(() => {
-        if (socketRef.current) {
+        const socket = socketRef.current;
+        if (socket) {
             const handler = ({ code }) => {
                 if (code !== null) {
                     editorRef.current.setValue(code);
                 }
             };
-            socketRef.current.on(ACTIONS.CODE_CHANGE, handler);
+            socket.on(ACTIONS.CODE_CHANGE, handler);
 
             return () => {
-                socketRef.current.off(ACTIONS.CODE_CHANGE, handler);
+                socket.off(ACTIONS.CODE_CHANGE, handler);
             };
         }
     }, [socketRef]);
