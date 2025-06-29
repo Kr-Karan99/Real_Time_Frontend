@@ -36,24 +36,22 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
             });
         }
         init();
-    }, []);
+    }, [onCodeChange, roomId, socketRef]);
 
     useEffect(() => {
         if (socketRef.current) {
-            socketRef.current.on(ACTIONS.CODE_CHANGE, ({ code }) => {
+            const handler = ({ code }) => {
                 if (code !== null) {
                     editorRef.current.setValue(code);
                 }
-            });
-        }
+            };
+            socketRef.current.on(ACTIONS.CODE_CHANGE, handler);
 
-        return () => {
-          console.log(socketRef.current)
-            if (socketRef.current) {
-                socketRef.current.off(ACTIONS.CODE_CHANGE);
-            }
-        };
-    }, [socketRef.current]);
+            return () => {
+                socketRef.current.off(ACTIONS.CODE_CHANGE, handler);
+            };
+        }
+    }, [socketRef]);
 
     return <textarea id="realtimeEditor"></textarea>;
 };

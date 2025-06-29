@@ -23,18 +23,18 @@ const EditorPage = () => {
           socketRef.current = await initSocket();
           socketRef.current.on('connect_error', (err) => handleErrors(err));
           socketRef.current.on('connect_failed', (err) => handleErrors(err));
-  
+
           function handleErrors(e) {
               console.log('socket error', e);
               toast.error('Socket connection failed, try again later.');
               reactNavigator('/');
           }
-  
+
           socketRef.current.emit(ACTIONS.JOIN, {
               roomId,
               username: location.state?.username,
           });
-  
+
           // Listening for joined event
           socketRef.current.on(
               ACTIONS.JOINED,
@@ -51,7 +51,7 @@ const EditorPage = () => {
                   });
               }
           );
-  
+
           // Listening for disconnected
           socketRef.current.on(
               ACTIONS.DISCONNECTED,
@@ -73,7 +73,7 @@ const EditorPage = () => {
               socketRef.current.off(ACTIONS.DISCONNECTED);
           }
       };
-  }, []);
+  }, [location.state?.username, reactNavigator, roomId]);
   
 
     async function copyRoomId() {
