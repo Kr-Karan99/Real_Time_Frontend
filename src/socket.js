@@ -8,5 +8,5 @@ export const initSocket = async () => {
         transports: ['websocket'],
     };
     // Use your backend's WebSocket URL here
-    return io('https://realtimebackend-production.up.railway.app/', options);
+    return io('https://realtimebackend-production.up.railway.app', options);
 };
