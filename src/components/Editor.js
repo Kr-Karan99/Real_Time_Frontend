@@ -12,31 +12,34 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
 
     useEffect(() => {
         async function init() {
-            editorRef.current = Codemirror.fromTextArea(
-                document.getElementById('realtimeEditor'),
-                {
-                    mode: { name: 'javascript', json: true },
-                    theme: 'dracula',
-                    autoCloseTags: true,
-                    autoCloseBrackets: true,
-                    lineNumbers: true,
-                }
-            );
+            if (!editorRef.current) {
+                editorRef.current = Codemirror.fromTextArea(
+                    document.getElementById('realtimeEditor'),
+                    {
+                        mode: { name: 'javascript', json: true },
+                        theme: 'dracula',
+                        autoCloseTags: true,
+                        autoCloseBrackets: true,
+                        lineNumbers: true,
+                    }
+                );
 
-            editorRef.current.on('change', (instance, changes) => {
-                const { origin } = changes;
-                const code = instance.getValue();
-                onCodeChange(code);
-                if (origin !== 'setValue') {
-                    socketRef.current.emit(ACTIONS.CODE_CHANGE, {
-                        roomId,
-                        code,
-                    });
-                }
-            });
+                editorRef.current.on('change', (instance, changes) => {
+                    const { origin } = changes;
+                    const code = instance.getValue();
+                    onCodeChange(code);
+                    if (origin !== 'setValue' && socketRef.current) {
+                        socketRef.current.emit(ACTIONS.CODE_CHANGE, {
+                            roomId,
+                            code,
+                        });
+                    }
+                });
+            }
         }
         init();
-    }, [onCodeChange, roomId, socketRef]);
+        // eslint-disable-next-line
+    }, []); // <-- Only run once on mount
 
     useEffect(() => {
         const socket = socketRef.current; // Copy ref to local variable
