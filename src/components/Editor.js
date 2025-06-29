@@ -39,7 +39,7 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
     }, [onCodeChange, roomId, socketRef]);
 
     useEffect(() => {
-        const socket = socketRef.current;
+        const socket = socketRef.current; // Copy ref to local variable
         if (socket) {
             const handler = ({ code }) => {
                 if (code !== null) {
@@ -52,6 +52,7 @@ const Editor = ({ socketRef, roomId, onCodeChange }) => {
                 socket.off(ACTIONS.CODE_CHANGE, handler);
             };
         }
+        // eslint-disable-next-line
     }, [socketRef]);
 
     return <textarea id="realtimeEditor"></textarea>;
